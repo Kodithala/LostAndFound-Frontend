@@ -139,7 +139,10 @@ const ItemDetails = () => {
   const getImageUrl = (url) => {
     if (!url) return null;
     if (url.startsWith('http')) return url;
-    return `http://localhost:8080${url}`;
+    const backendBase = import.meta.env.VITE_API_BASE_URL 
+      ? import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '') 
+      : 'http://localhost:8080';
+    return `${backendBase}${url}`;
   };
 
   if (loading) return <LoadingSpinner text="Fetching report details..." />;
