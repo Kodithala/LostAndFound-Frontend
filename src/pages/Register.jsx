@@ -85,15 +85,14 @@ const Register = () => {
                   </div>
 
                   <div className="col-md-6 mb-3">
-                    <label className="form-label fw-bold small text-secondary">Role</label>
+                    <label className="form-label fw-bold small text-secondary">Account Type</label>
                     <select
                       className="form-select bg-light"
                       value={role}
                       onChange={(e) => setRole(e.target.value)}
                     >
-                      <option value="USER">Student (User)</option>
-                      <option value="STAFF">Campus Staff</option>
-                      <option value="ADMIN">Administrator</option>
+                      <option value="USER">Student</option>
+                      <option value="STAFF">Staff</option>
                     </select>
                   </div>
                 </div>

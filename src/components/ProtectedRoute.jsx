@@ -2,20 +2,21 @@ import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from './LoadingSpinner';
+import AccessDenied from '../pages/AccessDenied';
 
-const ProtectedRoute = ({ adminOrStaffOnly = false }) => {
+const ProtectedRoute = ({ adminOnly = false }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <LoadingSpinner />;
+    return <LoadingSpinner text="Verifying authorization..." />;
   }
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  if (adminOrStaffOnly && user.role !== 'ADMIN' && user.role !== 'STAFF') {
-    return <Navigate to="/dashboard" replace />;
+  if (adminOnly && user.role !== 'ADMIN') {
+    return <AccessDenied />;
   }
 
   return <Outlet />;

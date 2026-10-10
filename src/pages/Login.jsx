@@ -1,41 +1,42 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [infoMessage, setInfoMessage] = useState('');
   const [loading, setLoading] = useState(false);
 
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('expired') === 'true') {
+      setInfoMessage('Your session has expired. Please log in again.');
+    }
+  }, [location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setInfoMessage('');
     setLoading(true);
 
     try {
-      await login(email, password);
-      navigate('/dashboard');
+      const data = await login(email, password);
+      if (data && data.role === 'ADMIN') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to sign in. Please check your credentials.');
+      setError(err.response?.data?.message || 'Invalid username or password.');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fillQuickCredentials = (role) => {
-    if (role === 'ADMIN') {
-      setEmail('admin@college.com');
-      setPassword('admin123');
-    } else if (role === 'STAFF') {
-      setEmail('staff@college.com');
-      setPassword('staff123');
-    } else if (role === 'STUDENT') {
-      setEmail('student@college.com');
-      setPassword('student123');
     }
   };
 
@@ -51,9 +52,10 @@ const Login = () => {
                 <p className="text-muted small">Enter your credentials to access Lost & Found portal</p>
               </div>
 
+              {infoMessage && <div className="alert alert-warning py-2 small mb-3">{infoMessage}</div>}
               {error && <div className="alert alert-danger py-2 small mb-3">{error}</div>}
 
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} autoComplete="off">
                 <div className="mb-3">
                   <label className="form-label fw-bold small text-secondary">Email Address</label>
                   <div className="input-group">
@@ -66,6 +68,7 @@ const Login = () => {
                       placeholder="student@college.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      autoComplete="username"
                       required
                     />
                   </div>
@@ -83,6 +86,7 @@ const Login = () => {
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      autoComplete="current-password"
                       required
                     />
                   </div>
@@ -96,34 +100,6 @@ const Login = () => {
                   {loading ? 'Signing In...' : 'Sign In'}
                 </button>
               </form>
-
-              {/* Demo Account Quick Buttons for Tutor Demo */}
-              <div className="border-top pt-3 mt-3">
-                <p className="text-muted small text-center mb-2 fw-bold">Quick Demo Login (1-Click Fill):</p>
-                <div className="d-flex justify-content-center gap-2">
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-outline-primary"
-                    onClick={() => fillQuickCredentials('STUDENT')}
-                  >
-                    Student
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-outline-success"
-                    onClick={() => fillQuickCredentials('STAFF')}
-                  >
-                    Staff
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-sm btn-outline-warning"
-                    onClick={() => fillQuickCredentials('ADMIN')}
-                  >
-                    Admin
-                  </button>
-                </div>
-              </div>
 
               <div className="text-center mt-4">
                 <p className="small text-muted mb-0">

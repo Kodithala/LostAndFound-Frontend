@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -21,7 +21,7 @@ import MyClaims from './pages/MyClaims';
 import Notifications from './pages/Notifications';
 import Profile from './pages/Profile';
 
-// Admin / Staff Pages
+// Admin Pages
 import AdminDashboard from './pages/AdminDashboard';
 import AdminUsers from './pages/AdminUsers';
 import AdminItems from './pages/AdminItems';
@@ -32,7 +32,7 @@ import AdminMatches from './pages/AdminMatches';
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <div className="d-flex flex-column min-vh-100">
           <Navbar />
           <main className="main-content">
@@ -56,8 +56,9 @@ function App() {
                 <Route path="/profile" element={<Profile />} />
               </Route>
 
-              {/* Admin & Staff Protected Routes */}
-              <Route element={<ProtectedRoute adminOrStaffOnly={true} />}>
+              {/* Admin Protected Routes */}
+              <Route element={<ProtectedRoute adminOnly={true} />}>
+                <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
                 <Route path="/admin/users" element={<AdminUsers />} />
                 <Route path="/admin/items" element={<AdminItems />} />

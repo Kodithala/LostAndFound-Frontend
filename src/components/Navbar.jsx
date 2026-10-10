@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
-  const { user, logout, unreadCount, isAdminOrStaff } = useAuth();
+  const { user, logout, unreadCount, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -60,8 +60,8 @@ const Navbar = () => {
               </>
             )}
 
-            {/* Admin / Staff Navigation */}
-            {isAdminOrStaff && (
+            {/* Admin Portal Navigation - Only visible to authenticated ADMINs */}
+            {isAdmin && (
               <li className="nav-item dropdown">
                 <a
                   className="nav-link dropdown-toggle text-warning font-weight-bold"
