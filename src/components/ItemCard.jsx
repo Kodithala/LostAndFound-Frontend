@@ -7,7 +7,7 @@ const getImageUrl = (url) => {
     if (url.startsWith('http')) return url;
     const backendBase = import.meta.env.VITE_API_BASE_URL 
       ? import.meta.env.VITE_API_BASE_URL.replace(/\/api\/?$/, '') 
-      : 'http://localhost:8080';
+      : 'https://lostandfound-backend-production-a81a.up.railway.app';
     return `${backendBase}${url}`;
   };
 
