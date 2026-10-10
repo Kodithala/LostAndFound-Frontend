@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
       const res = await API.get('/users/profile');
       setUser(res.data);
     } catch (err) {
-      console.error('Failed to fetch profile:', err);
+      // Cleanly logout if token is invalid or expired
       logout();
     } finally {
       setLoading(false);
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
       const res = await API.get('/notifications/unread-count');
       setUnreadCount(res.data.unreadCount || 0);
     } catch (err) {
-      console.error('Failed to fetch unread count:', err);
+      setUnreadCount(0);
     }
   };
 

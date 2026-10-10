@@ -19,15 +19,12 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Global response error interceptor for 401 handling
+// Global response error interceptor to clean up invalid tokens
 API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
       localStorage.removeItem('token');
-      if (!window.location.pathname.startsWith('/login')) {
-        window.location.href = '/login?expired=true';
-      }
     }
     return Promise.reject(error);
   }
